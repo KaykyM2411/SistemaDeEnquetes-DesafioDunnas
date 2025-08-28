@@ -1,0 +1,36 @@
+<div class="min-h-screen w-full flex flex-col items-center p-6 pt-24">
+  
+  <div class="w-full max-w-2xl bg-gray-900 bg-opacity-90 rounded-2xl shadow-2xl p-10 border border-gray-800">
+
+    <h1 class="text-3xl font-bold text-center text-white mb-2">Minhas Enquetes</h1>
+    <p class="text-center text-gray-400 mb-8">Gerencie as enquetes que você criou.</p>
+
+    <% if @polls.any? %>
+      <% @polls.group_by(&:status).each do |status, polls| %>
+        <h2 class="text-xl font-semibold mt-6 mb-4 text-white">
+          <%= status == 'open' ? '🟢 Enquetes Abertas' : '🔴 Enquetes Fechadas' %>
+        </h2>
+        
+        <div class="space-y-4">
+          <% polls.each do |poll| %>
+            <div class="bg-gray-800 bg-opacity-70 rounded-lg p-6 shadow-xl border border-gray-700 hover:bg-gray-700 transition">
+              <h3 class="text-lg font-medium text-white"><%= poll.question %></h3>
+              <p class="text-sm text-gray-400 mt-1">
+                Status: <span class="font-semibold"><%= poll.status == 'open' ? 'Aberta' : 'Fechada' %></span> • 
+                Criada: <%= time_ago_in_words(poll.created_at) %> atrás •
+                Votos: <%= poll.votes.count %>
+              </p>
+              <%= link_to 'Ver Resultados', poll, class: 'mt-3 inline-block text-blue-400 hover:text-blue-300 font-semibold' %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="text-center py-8">
+        <p class="text-gray-400">Você ainda não criou nenhuma enquete.</p>
+        <%= link_to 'Criar primeira enquete', new_poll_path, class: 'text-blue-400 hover:text-blue-300 mt-2 inline-block' %>
+      </div>
+    <% end %>
+
+  </div>
+</div>

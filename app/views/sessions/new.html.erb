@@ -1,2 +1,32 @@
-<h1>Sessions#new</h1>
-<p>Find me in app/views/sessions/new.html.erb</p>
+<div class="min-h-screen w-full flex items-center justify-center p-6">
+  <div class="w-full max-w-md bg-gray-900 bg-opacity-90 rounded-2xl shadow-2xl p-10 border border-gray-800">
+    
+    <h1 class="text-3xl font-bold text-center text-white mb-2">Bem-vindo a melhor plataforma de enquetes do mundo</h1>
+    <p class="text-center text-gray-400 mb-8">Faça login para continuar</p>
+
+    <%= form_with(url: login_path, local: true, class: "space-y-6") do |form| %>
+      <div>
+        <%= form.label :email, "Email", class: "block text-sm font-semibold text-gray-300 mb-2" %>
+        <%= form.email_field :email, required: true,
+              class: "w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none transition",
+              placeholder: "Digite seu email" %>
+      </div>
+
+      <div>
+        <%= form.label :password, "Senha", class: "block text-sm font-semibold text-gray-300 mb-2" %>
+        <%= form.password_field :password, required: true,
+              class: "w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none transition",
+              placeholder: "Digite sua senha" %>
+      </div>
+
+      <%= form.submit "Entrar", 
+            class: "w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 rounded-lg shadow-lg transition transform hover:scale-105 active:scale-95" %>
+    <% end %>
+
+    <div class="flex justify-between text-sm mt-6">
+      <%= link_to "#", class: "text-gray-400 hover:text-blue-400 transition" do %>
+        Esqueceu a senha?
+      <% end %>
+    </div>
+  </div>
+</div>

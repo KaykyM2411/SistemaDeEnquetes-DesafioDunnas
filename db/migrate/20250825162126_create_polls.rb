@@ -8,6 +8,6 @@ class CreatePolls < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    add_index :polls, :status  
+    add_index :polls, :status
   end
 end

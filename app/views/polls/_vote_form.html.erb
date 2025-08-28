@@ -1,0 +1,21 @@
+<%= form_with url: poll_votes_path(@poll), class: "space-y-4" do |form| %>
+  <% if @poll.poll_type == 'single' %>
+    <% @poll.options.each do |option| %>
+      <div class="flex items-center">
+        <%= form.radio_button :option_id, option.id, id: "option_#{option.id}", class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" %>
+        <%= form.label "option_#{option.id}", option.content, class: "ml-3 text-sm text-gray-400" %>
+      </div>
+    <% end %>
+  <% elsif @poll.poll_type == 'multiple' %>
+    <% @poll.options.each do |option| %>
+      <div class="flex items-center">
+        <%= form.check_box "option_ids[]", { multiple: true, id: "option_#{option.id}" }, option.id, nil, class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" %>
+        <%= form.label "option_#{option.id}", option.content, class: "ml-3 text-sm text-gray-400" %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <div class="pt-4">
+    <%= form.submit "Votar", class: "w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition" %>
+  </div>
+<% end %>

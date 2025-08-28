@@ -10,9 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_23_214511) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_25_162151) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "options", force: :cascade do |t|
+    t.string "content", null: false
+    t.bigint "poll_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["poll_id"], name: "index_options_on_poll_id"
+  end
 
   create_table "polls", force: :cascade do |t|
     t.string "question", null: false
@@ -34,5 +42,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_23_214511) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  create_table "votes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "poll_id", null: false
+    t.bigint "option_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["option_id"], name: "index_votes_on_option_id"
+    t.index ["poll_id"], name: "index_votes_on_poll_id"
+    t.index ["user_id", "poll_id"], name: "index_votes_on_user_id_and_poll_id", unique: true
+    t.index ["user_id"], name: "index_votes_on_user_id"
+  end
+
+  add_foreign_key "options", "polls"
   add_foreign_key "polls", "users"
+  add_foreign_key "votes", "options"
+  add_foreign_key "votes", "polls"
+  add_foreign_key "votes", "users"
 end
