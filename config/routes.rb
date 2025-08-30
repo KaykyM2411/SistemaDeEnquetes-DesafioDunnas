@@ -6,11 +6,13 @@ Rails.application.routes.draw do
   delete 'logout', to: 'sessions#destroy'
   get 'my_polls', to: 'polls#my_polls'
   get 'voted_polls', to: 'polls#voted_polls'
-  
+  get 'users', to: 'users#index', as: 'users'
+  get 'closed_polls', to: 'polls#closed_polls'
+
   resources :users
   
   resources :polls do
     resources :votes, only: [:create]
-    post 'close', on: :member
+    patch 'close', on: :member
   end
 end

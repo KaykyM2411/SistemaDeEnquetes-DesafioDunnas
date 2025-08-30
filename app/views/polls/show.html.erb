@@ -1,41 +1,82 @@
-<div class="min-h-screen w-full flex flex-col items-center p-6 pt-24 bg-gradient-to-br from-blue-900 via-blue-700 to-blue-400">
-  <div class="w-full max-w-2xl bg-gray-900 bg-opacity-90 rounded-2xl shadow-2xl p-10 border border-gray-800">
-    <h1 class="text-3xl font-bold text-center text-white mb-2"><%= @poll.question %></h1>
-    <p class="text-center text-gray-400 mb-8">
-      <% if @poll.open? %>
-        Status: <span class="text-green-400 font-semibold">Aberta</span>
-      <% else %>
-        Status: <span class="text-red-400 font-semibold">Fechada</span>
-      <% end %>
-    </p>
 
-    <% if @poll.closed? || @poll.voted_by?(current_user) %>
-      <div class="space-y-4">
-        <% @poll.options.each do |option| %>
-          <% vote_count = option.votes.count %>
-          <% total_votes = @poll.total_votes %>
-          <% percentage = total_votes > 0 ? (vote_count.to_f / total_votes) * 100 : 0 %>
+<div class="container mx-auto mt-8 p-6 bg-gray-900 text-white rounded-lg shadow-xl">
+  <% if @poll.nil? %>
+    <div class="text-center p-8">
+      <h1 class="text-4xl font-extrabold text-red-500 mb-4">Enquete não encontrada</h1>
+      <p class="text-gray-400 mb-6">A enquete que você está tentando acessar não existe ou foi excluída.</p>
+      <%= link_to 'Voltar para a página inicial', polls_path, class: "bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition transform hover:scale-105" %>
+    </div>
+  <% else %>
+    <h1 class="text-5xl font-extrabold text-center mb-6 text-white">
+      <%= @poll.question %>
+    </h1>
 
-          <div class="bg-gray-800 rounded-lg p-4 shadow">
-            <div class="flex justify-between items-center mb-1">
-              <span class="text-white"><%= option.content %></span>
-              <span class="text-sm text-gray-400"><%= vote_count %> votos (<%= "%.2f" % percentage %>%)</span>
-            </div>
-            <div class="w-full bg-gray-700 rounded-full h-2.5">
-              <div class="bg-blue-500 h-2.5 rounded-full" style="width: <%= percentage %>%"></div>
-            </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Bloco de Votação/Resultados -->
+      <div class="bg-gray-800 p-6 rounded-lg shadow-md border border-gray-700">
+        <% if @poll.open? && !@poll.votes.exists?(user: current_user) %>
+          <h2 class="text-2xl font-bold mb-4">Vote aqui:</h2>
+          <%= render 'vote_form', poll: @poll %>
+        <% else %>
+          <h2 class="text-2xl font-bold mb-4">
+            <%= @poll.open? ? 'Parciais' : 'Resultados Finais' %>
+          </h2>
+          <% total_votes = @poll.votes.count %>
+          <div class="space-y-4">
+            <% @poll.options.each do |option| %>
+              <% vote_count = option.votes.count %>
+              <% percentage = total_votes > 0 ? (vote_count.to_f / total_votes * 100).round(2) : 0 %>
+              <div class="bg-gray-700 p-4 rounded-lg shadow-inner">
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-lg font-semibold"><%= option.content %></span>
+                  <span class="text-sm font-bold text-gray-300"><%= percentage %>%</span>
+                </div>
+                <div class="w-full bg-gray-600 rounded-full h-2.5">
+                  <div class="bg-blue-500 h-2.5 rounded-full" style="width: <%= percentage %>%;"></div>
+                </div>
+                <div class="flex justify-end mt-2">
+                  <span class="text-xs text-gray-400"><%= pluralize(vote_count, 'voto') %></span>
+                </div>
+              </div>
+            <% end %>
           </div>
         <% end %>
       </div>
-      <div class="text-center mt-6">
-        <span class="text-gray-400">Total de Votos: <%= @poll.total_votes %></span>
-      </div>
-    <% else %>
-      <%= render 'vote_form', poll: @poll %>
-    <% end %>
 
-    <div class="mt-8 flex justify-between items-center border-t border-gray-800 pt-6">
-      <%= link_to 'Voltar para Enquetes', polls_path, class: 'bg-gray-700 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-600 transition' %>
+      <!-- Bloco de Informações da Enquete -->
+      <div class="bg-gray-800 p-6 rounded-lg shadow-md border border-gray-700">
+        <h2 class="text-2xl font-bold mb-4">Informações</h2>
+        <p class="text-gray-400 mb-2">Criado por:
+          <span class="text-white">
+            <% if @poll.user %>
+              <%= @poll.user.email %>
+            <% else %>
+              <%= @poll.user_email %>
+            <% end %>
+          </span>
+        </p>
+        <p class="text-gray-400 mb-2">Status:
+          <span class="<%= @poll.open? ? 'text-green-400' : 'text-red-400' %> font-bold">
+            <%= @poll.open? ? 'Aberta' : 'Fechada' %>
+          </span>
+        </p>
+        <p class="text-gray-400">Total de votos: <span class="text-white"><%= @poll.votes.count %></span></p>
+
+        <div class="mt-8 flex gap-4">
+          <%if current_user && (current_user.id == @poll.user_id || current_user.user_type == 'admin') && @poll.open?%>
+            <%= link_to 'Editar Enquete', edit_poll_path(@poll), class: "bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition" %>
+          <%end%>
+          <%= link_to 'Voltar', polls_path, class: "bg-gray-700 text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-600 transition" %>
+          <%if current_user && (current_user.id == @poll.user_id || current_user.user_type == 'admin') && @poll.open?%>
+            <%= button_to 'Excluir Enquete', @poll, method: :delete, data: { confirm: 'Tem certeza?' }, class: "bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition" %>
+          <%end%>
+          
+          <% if current_user && (current_user.id == @poll.user_id || current_user.user_type == 'admin') && @poll.open? %>
+            <%= button_to 'Fechar Enquete', close_poll_path(@poll), method: :patch,
+                class: "bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition" %>
+          <% end %>
+        </div>
+      </div>
     </div>
-  </div>
+  <% end %>
 </div>

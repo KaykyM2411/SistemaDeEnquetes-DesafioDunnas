@@ -1,8 +1,9 @@
 <%= form_with(model: user) do |form| %>
   <% if user.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
-
+    <div id="error_explanation" class="text-red-400">
+      <h2 class="font-bold">
+        <%= pluralize(user.errors.count, "erro") %> impediu que este usuário fosse salvo:
+      </h2>
       <ul>
         <% user.errors.each do |error| %>
           <li><%= error.full_message %></li>
@@ -11,22 +12,27 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :email, style: "display: block" %>
-    <%= form.text_field :email %>
+  <div class="mb-4">
+    <%= form.label :email, class: "block text-white text-sm font-bold mb-2" %>
+    <%= form.email_field :email, class: "w-full py-2 px-3 bg-gray-700 text-white leading-tight rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" %>
   </div>
 
-  <div>
-    <%= form.label :password_digest, style: "display: block" %>
-    <%= form.text_field :password_digest %>
+  <div class="mb-4">
+    <%= form.label :password, "Senha", class: "block text-white text-sm font-bold mb-2" %>
+    <%= form.password_field :password, class: "w-full py-2 px-3 bg-gray-700 text-white leading-tight rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" %>
   </div>
 
-  <div>
-    <%= form.label :user_type, style: "display: block" %>
-    <%= form.number_field :user_type %>
+  <div class="mb-4">
+    <%= form.label :password_confirmation, "Confirme a Senha", class: "block text-white text-sm font-bold mb-2" %>
+    <%= form.password_field :password_confirmation, class: "w-full py-2 px-3 bg-gray-700 text-white leading-tight rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" %>
   </div>
 
-  <div>
-    <%= form.submit %>
+  <div class="mb-4">
+    <%= form.label :user_type, "Tipo de Usuário", class: "block text-white text-sm font-bold mb-2" %>
+    <%= form.select :user_type, [['Usuário', 'user'], ['Admin', 'admin']], { include_blank: 'Selecione o tipo de usuário' }, class: "w-full py-2 px-3 bg-gray-700 text-white leading-tight rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" %>
+  </div>
+
+  <div class="actions mt-6">
+    <%= form.submit "Salvar", class: "w-full py-2 px-4 rounded-lg font-bold text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 transition transform hover:scale-105 shadow-lg cursor-pointer" %>
   </div>
 <% end %>

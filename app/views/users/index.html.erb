@@ -1,16 +1,24 @@
-<p style="color: green"><%= notice %></p>
-
-<% content_for :title, "Users" %>
-
-<h1>Users</h1>
-
-<div id="users">
-  <% @users.each do |user| %>
-    <%= render user %>
-    <p>
-      <%= link_to "Show this user", user %>
-    </p>
-  <% end %>
+<div class="min-h-screen w-full flex flex-col items-center p-6 pt-4 bg-gray-900 text-white">
+  <div class="w-full max-w-4xl">
+    <h1 class="text-4xl font-extrabold text-center mb-10 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+      Gerenciar Usuários
+    </h1>
+    
+    <%= link_to "Novo usuário", new_user_path, class: "mb-6 inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition transform hover:scale-105 shadow-lg" %>
+    
+    <div class="space-y-4">
+      <% @users.each do |user| %>
+        <div class="bg-gray-800 rounded-lg shadow-xl p-6 transition-all duration-200 hover:bg-gray-700 hover:shadow-2xl flex justify-between items-center">
+          <div>
+            <p class="text-lg font-bold text-gray-200"><%= user.email %></p>
+            <p class="text-sm text-gray-400"><%= user.user_type.capitalize %></p>
+          </div>
+          <div class="flex gap-2 items-center">
+            <%= link_to "Editar", edit_user_path(user), class: "bg-yellow-500 text-gray-900 px-4 py-2 rounded-lg hover:bg-yellow-600 transition transform hover:scale-105" %>
+            <%= button_to "Excluir", user_path(user), method: :delete, data: { confirm: "Tem certeza que deseja excluir este usuário?" }, class: "bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition transform hover:scale-105" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
 </div>
-
-<%= link_to "New user", new_user_path %>

@@ -1,10 +1,26 @@
-<p style="color: green"><%= notice %></p>
+<% content_for :title, "Detalhes do Usuário" %>
 
-<%= render @user %>
+<div class="min-h-screen w-full flex flex-col items-center justify-center p-6 bg-gray-900 text-white">
+  <% if notice %>
+    <p class="bg-green-500 text-white px-4 py-2 rounded-lg mb-4"><%= notice %></p>
+  <% end %>
 
-<div>
-  <%= link_to "Edit this user", edit_user_path(@user) %> |
-  <%= link_to "Back to users", users_path %>
+  <div class="w-full max-w-lg bg-gray-800 rounded-2xl shadow-2xl p-10 border border-gray-700 text-center">
+    <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-4">Detalhes do Usuário</h1>
+    
+    <div id="user" class="text-left mb-6">
+      <p class="text-lg font-semibold text-white mb-2">
+        <span class="text-gray-400 font-normal">Email:</span> <%= @user.email %>
+      </p>
+      <p class="text-lg font-semibold text-white">
+        <span class="text-gray-400 font-normal">Tipo de Usuário:</span> <span class="capitalize text-blue-400"><%= @user.user_type %></span>
+      </p>
+    </div>
 
-  <%= button_to "Destroy this user", @user, method: :delete %>
+    <div class="flex flex-col md:flex-row justify-center items-center gap-4">
+      <%= link_to "Editar este usuário", edit_user_path(@user), class: "bg-yellow-500 text-white px-6 py-3 rounded-lg hover:bg-yellow-600 transition transform hover:scale-105 shadow-lg font-bold" %>
+      <%= link_to "Voltar para usuários", users_path, class: "bg-gray-700 text-gray-300 px-6 py-3 rounded-lg hover:bg-gray-600 transition shadow-lg font-bold" %>
+      <%= button_to "Excluir este usuário", @user, method: :delete, data: { confirm: 'Tem certeza que deseja excluir este usuário?' }, class: "bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition transform hover:scale-105 shadow-lg font-bold" %>
+    </div>
+  </div>
 </div>

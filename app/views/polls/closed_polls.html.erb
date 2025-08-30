@@ -1,0 +1,21 @@
+<div class="container mx-auto mt-8 p-6 bg-gray-900 text-white rounded-lg shadow-xl">
+  <h1 class="text-3xl font-bold mb-6 text-center">Resultados das Enquetes Encerradas</h1>
+  
+  <% if @polls.nil? || @polls.empty? %>
+    <div class="text-center p-8">
+      <p class="text-gray-400">Nenhuma enquete encerrada encontrada.</p>
+    </div>
+  <% else %>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% @polls.each do |poll| %>
+        <div class="bg-gray-800 p-6 rounded-lg shadow-md border border-gray-700">
+          <h2 class="text-2xl font-semibold mb-2"><%= link_to poll.question, poll, class: "text-white hover:text-blue-400" %></h2>
+          <p class="text-gray-400 text-sm mb-4">Total de Votos: <%= poll.votes.count %></p>
+          <div class="mt-4 text-right">
+            <%= link_to 'Ver Resultados', poll, class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

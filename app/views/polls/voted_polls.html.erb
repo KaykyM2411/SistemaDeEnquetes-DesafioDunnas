@@ -1,28 +1,49 @@
+<% content_for :title, "Enquetes que Votei" %>
+
 <div class="min-h-screen w-full flex flex-col items-center p-6 pt-24">
   <div class="w-full max-w-2xl bg-gray-900 bg-opacity-90 rounded-2xl shadow-2xl p-10 border border-gray-800">
     <h1 class="text-3xl font-bold text-center text-white mb-2">Enquetes que Votei</h1>
-    <p class="text-center text-gray-400 mb-8">Confira as enquetes que você participou.</p>
+    <p class="text-center text-gray-400 mb-8">Aqui estão todas as enquetes em que você participou.</p>
 
-    <% if @polls.any? %>
-      <div class="space-y-4">
-        <% @polls.each do |poll| %>
-          <div class="bg-gray-800 bg-opacity-70 rounded-lg p-6 shadow-xl border border-gray-700 hover:bg-gray-700 transition">
-            <h3 class="text-lg font-medium text-white"><%= poll.question %></h3>
-            <p class="text-sm text-gray-400 mt-1">
-              Criada por: <%= poll.user.email %> •
-              Status: <span class="font-semibold"><%= poll.status == 'open' ? '🟢 Aberta' : '🔴 Fechada' %></span>
-            </p>
-            <p class="text-sm text-gray-400 mt-1">
-              Seu voto: <span class="font-semibold text-blue-400"><%= current_user.votes.find_by(poll: poll).option.content %></span>
-            </p>
-            <%= link_to 'Ver Resultados', poll, class: 'mt-3 inline-block text-blue-400 hover:text-blue-300 font-semibold' %>
-          </div>
-        <% end %>
+    <% if @voted_polls.empty? %>
+      <div class="text-center text-gray-400 font-semibold text-lg py-12">
+        Você ainda não votou em nenhuma enquete.
       </div>
     <% else %>
-      <div class="text-center py-8">
-        <p class="text-gray-400">Você ainda não votou em nenhuma enquete.</p>
-        <%= link_to 'Explorar Enquetes', root_path, class: 'text-blue-400 hover:text-blue-300 mt-2 inline-block' %>
+      <div class="space-y-6">
+        <% @voted_polls.each do |poll| %>
+          <div class="bg-gray-800 rounded-lg shadow-xl p-6 transition-all duration-200 hover:bg-gray-700 hover:shadow-2xl">
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="text-2xl font-bold">
+                <%= link_to poll.question, poll, class: "text-white hover:text-gray-400 transition" %>
+              </h2>
+              <span class="px-3 py-1 text-sm font-semibold rounded-full <%= poll.status == 'open' ? 'bg-green-500 text-white' : 'bg-red-500 text-white' %>">
+                <%= poll.status.capitalize %>
+              </span>
+            </div>
+            <div class="text-sm text-gray-400 flex items-center gap-4">
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9 12a1 1 0 100-2 1 1 0 000 2z"></path>
+                  <path fill-rule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zm-5 8a5 5 0 1110 0 5 5 0 01-10 0z" clip-rule="evenodd"></path>
+                </svg>
+                <%= poll.poll_type == 'single' ? 'Escolha Única' : 'Múltipla Escolha' %>
+              </span>
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                Criada por: <% if poll.user.present? %><%= poll.user_email %> <% else %> <span class="font-semibold text-red-400">Usuário Removido</span> <% end %>
+              </span>
+              <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2 2a1 1 0 001.414-1.414L11 9.586V6z" clip-rule="evenodd"></path>
+                </svg>
+                <%= time_ago_in_words(poll.created_at) %> atrás
+              </span>
+            </div>
+          </div>
+        <% end %>
       </div>
     <% end %>
   </div>

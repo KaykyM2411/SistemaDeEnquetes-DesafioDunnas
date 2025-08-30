@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_25_162151) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_29_205108) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -26,9 +26,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_25_162151) do
     t.string "question", null: false
     t.string "poll_type", null: false
     t.string "status", default: "open", null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "user_email"
     t.index ["status"], name: "index_polls_on_status"
     t.index ["user_id"], name: "index_polls_on_user_id"
   end

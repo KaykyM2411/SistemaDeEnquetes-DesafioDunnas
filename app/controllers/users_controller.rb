@@ -3,7 +3,11 @@ class UsersController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:create]
 
   def index
-    @users = User.all
+    if current_user && current_user.user_type == 'admin'
+      @users = User.all
+    else
+      redirect_to root_path, alert: 'Você não tem permissão para acessar essa página'
+    end
   end
 
   def show
@@ -45,12 +49,9 @@ class UsersController < ApplicationController
 
   # DELETE /users/1 or /users/1.json
   def destroy
-    @user.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to users_path, notice: "User was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+    @user.polls.update_all(status: 'closed', user_id: nil)
+    @user.destroy
+    redirect_to users_path, notice: 'Usuário excluido com sucesso!'
   end
 
   private

@@ -1,21 +1,24 @@
-<%= form_with url: poll_votes_path(@poll), class: "space-y-4" do |form| %>
-  <% if @poll.poll_type == 'single' %>
-    <% @poll.options.each do |option| %>
-      <div class="flex items-center">
-        <%= form.radio_button :option_id, option.id, id: "option_#{option.id}", class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300" %>
-        <%= form.label "option_#{option.id}", option.content, class: "ml-3 text-sm text-gray-400" %>
-      </div>
-    <% end %>
-  <% elsif @poll.poll_type == 'multiple' %>
-    <% @poll.options.each do |option| %>
-      <div class="flex items-center">
-        <%= form.check_box "option_ids[]", { multiple: true, id: "option_#{option.id}" }, option.id, nil, class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" %>
-        <%= form.label "option_#{option.id}", option.content, class: "ml-3 text-sm text-gray-400" %>
-      </div>
-    <% end %>
-  <% end %>
+<%= form_with(model: [poll, Vote.new], local: true) do |f| %>
+  <div class="space-y-3">
+    <% poll.options.each do |option| %>
+      <label class="flex items-center p-4 bg-gray-700 rounded-xl cursor-pointer hover:bg-gray-600 transition relative">
+        <%= f.radio_button :option_id, option.id,
+              class: "hidden peer" %>
+        
+        <!-- Círculo customizado -->
+        <div class="w-5 h-5 rounded-full border-2 border-gray-400 flex items-center justify-center peer-checked:border-blue-500">
+          <div class="w-2.5 h-2.5 rounded-full bg-blue-500 hidden peer-checked:block"></div>
+        </div>
 
-  <div class="pt-4">
-    <%= form.submit "Votar", class: "w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition" %>
+        <!-- Texto da opção -->
+        <span class="ml-3 text-white text-lg font-medium"><%= option.content %></span>
+      </label>
+    <% end %>
   </div>
+
+  <!-- Botão de votar -->
+  <div class="mt-6 text-center">
+  <%= f.submit "Votar", class: "w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition transform hover:scale-105 font-semibold" %>
+</div>
+
 <% end %>
